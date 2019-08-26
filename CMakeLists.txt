@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(playground_project)
+project(roverCpp_project)
 
 option(BUILD_TESTS "Enable compilation of tests" ON)
 
