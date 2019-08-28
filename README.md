@@ -8,16 +8,18 @@ of concept, which would have been nice. Most of the interfaces between the rover
 ## build instructions
 
 ```
-git clone --recursive [address]
+cd <path for the repo>
+git clone --recursive https://github.com/lukasTolksdorf/RoverCpp.git .
 cd RoverC++
 mkdir build && cd build
 cmake -GNinja ..
 ninja
 ```
 
-## Run Application
+## Run Application with example input
 ```
-cat input.txt | <Path to executable>/RoverController
+cd build
+cat ../common/example/test.txt | ./RoverController/RoverController
 ```
 ## Run Test
 the roverLib and the controller lib both come with Unit test with a cmake target, namely Ut_controllerLib and Ut_roverLib
