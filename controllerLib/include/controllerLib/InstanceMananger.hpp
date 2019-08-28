@@ -53,11 +53,11 @@ public:
 
   void calibrateCurrentInstance(const typename InstanceType::StateType &state_) {
     if (current_->wasCalibrated()) {
-      log(current_.getId(), "was recalibrated!");
+      log(current_->getId(), "was recalibrated!");
     }
     current_->calibrate(state_);
   }
-  
+
 PRIVATE:
 
   std::array<InstanceType, 4> instances_;
