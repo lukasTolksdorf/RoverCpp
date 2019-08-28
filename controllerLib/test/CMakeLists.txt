@@ -1,0 +1,19 @@
+add_executable(Ut_controllerLib
+        Ut_ControllerPolicyClass_Fixture.hpp
+        Ut_ControllerPolicyClass.cc
+        Ut_InstanceManager_Fixture.hpp
+        Ut_InstanceManager.cc
+        Ut_IStreamRouter_Fixture.hpp
+        Ut_IStreamRouter.cc
+        FakeCommandDecoder.hpp
+        FakeCommandDecoder.cc
+        MockConstraintType.hpp
+        MockConstraintType.cc
+        MockControllerType.hpp
+        MockControllerType.cc
+        MockInstanceManager.hpp
+        MockInstanceManager.cc
+        MockInstanceType.hpp
+        MockInstanceType.cc
+        )
+target_link_libraries(Ut_controllerLib controllerLib_mut gtest gmock gtest_main)

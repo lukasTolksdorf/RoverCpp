@@ -2,6 +2,7 @@
 
 namespace test {
 namespace RoverCpp {
+namespace Rover {
 
 /*
  * \description   This Ut verifies that a rover is correctly instantiated
@@ -16,7 +17,7 @@ namespace RoverCpp {
  */
 TEST(UtRover, CreateRoverAtPosition) {
   {
-    auto rover = ::RoverCpp::Rover(1, 2, ::RoverCpp::Orientation::WEST);
+    auto rover = ::RoverCpp::Rover::Rover(1, 2, ::RoverCpp::Orientation::WEST);
 
     EXPECT_EQ(1, rover.getStateX());
     EXPECT_EQ(2, rover.getStateY());
@@ -25,7 +26,7 @@ TEST(UtRover, CreateRoverAtPosition) {
 }
 
 struct RoverTurnTestDataType {
-  ::RoverCpp::Rover::CommandType command;
+  ::RoverCpp::Rover::RoverCommandType command;
   ::RoverCpp::Orientation expectedOrientation;
 };
 
@@ -81,8 +82,7 @@ const GeneralRoverTestVectorType<RoverTurnTestDataType> roverTurnTestData{
 
 using UtRoverTurnFixture_P = UtRoverFixture_P<RoverTurnTestDataType>;
 
-INSTANTIATE_TEST_CASE_P(/* empty prefix*/, UtRoverTurnFixture_P,
-                        ::testing::ValuesIn(roverTurnTestData));
+INSTANTIATE_TEST_CASE_P(/* empty prefix*/, UtRoverTurnFixture_P, ::testing::ValuesIn(roverTurnTestData));
 
 /*
  * \description   This Ut test the turning mechanics of the rover
@@ -117,9 +117,9 @@ TEST_P(UtRoverTurnFixture_P, Turning) {
 }
 
 struct RoverMoveTestDataType {
-  ::RoverCpp::Rover::CommandType command;
-  decltype(::RoverCpp::Rover::StateType::x) expected_x;
-  decltype(::RoverCpp::Rover::StateType::y) expected_y;
+  ::RoverCpp::Rover::RoverCommandType command;
+  decltype(::RoverCpp::Rover::RoverStateType::x) expected_x;
+  decltype(::RoverCpp::Rover::RoverStateType::y) expected_y;
 };
 
 // clang-format off
@@ -177,8 +177,7 @@ const GeneralRoverTestVectorType<RoverMoveTestDataType> roverMoveTestData = {
 
 using UtRoverMoveFixture_P = UtRoverFixture_P<RoverMoveTestDataType>;
 
-INSTANTIATE_TEST_CASE_P(/* empty prefix*/, UtRoverMoveFixture_P,
-                        ::testing::ValuesIn(roverMoveTestData));
+INSTANTIATE_TEST_CASE_P(/* empty prefix*/, UtRoverMoveFixture_P, ::testing::ValuesIn(roverMoveTestData));
 
 /*
  * \description   This Ut test the move mechanics of the rover
@@ -208,26 +207,23 @@ TEST_P(UtRoverMoveFixture_P, Move) {
     rover.executeCommand(step.command);
 
     // testResult
-    EXPECT_EQ(rover.getState(), (::RoverCpp::Rover::StateType{
-                                    step.expected_x, step.expected_y,
-                                    testData.initialState.orientation}));
+    EXPECT_EQ(rover.getState(), (::RoverCpp::Rover::RoverStateType{step.expected_x, step.expected_y, testData.initialState.orientation}));
     EXPECT_EQ(rover.getState(), predictedState);
   }
 }
 
 struct RoverCommandInteractionTestDataType {
-  ::RoverCpp::Rover::CommandType command;
-  ::RoverCpp::Rover::StateType expectedState;
+  ::RoverCpp::Rover::RoverCommandType command;
+  ::RoverCpp::Rover::RoverStateType expectedState;
 };
 
-const GeneralRoverTestVectorType<RoverCommandInteractionTestDataType>
-    commandInteractionTestData = {
-        {// TestCase 1
-         // initial state
-         {0, 0, ::RoverCpp::Orientation::NORTH},
-         // procedural data
-         {
-             // clang-format off
+const GeneralRoverTestVectorType<RoverCommandInteractionTestDataType> commandInteractionTestData = {
+    {// TestCase 1
+     // initial state
+     {0, 0, ::RoverCpp::Orientation::NORTH},
+     // procedural data
+     {
+         // clang-format off
              {::RoverCpp::Rover::MOVE,      {  0,  1, ::RoverCpp::Orientation::NORTH}},
              {::RoverCpp::Rover::TURNLEFT,  {  0,  1, ::RoverCpp::Orientation::WEST}},
              {::RoverCpp::Rover::MOVE,      { -1,  1, ::RoverCpp::Orientation::WEST}},
@@ -237,16 +233,13 @@ const GeneralRoverTestVectorType<RoverCommandInteractionTestDataType>
              {::RoverCpp::Rover::TURNLEFT,  { -2,  0, ::RoverCpp::Orientation::EAST}},
              {::RoverCpp::Rover::MOVE,      { -1,  0, ::RoverCpp::Orientation::EAST}},
              {::RoverCpp::Rover::MOVE,      {  0,  0, ::RoverCpp::Orientation::EAST}},
-             // clang-format on
-         }
-        },
+         // clang-format on
+     }},
 };
 
-using UtRoverCommandInteractionFixture_P =
-    UtRoverFixture_P<RoverCommandInteractionTestDataType>;
+using UtRoverCommandInteractionFixture_P = UtRoverFixture_P<RoverCommandInteractionTestDataType>;
 
-INSTANTIATE_TEST_CASE_P(/* empty prefix*/, UtRoverCommandInteractionFixture_P,
-                        ::testing::ValuesIn(commandInteractionTestData));
+INSTANTIATE_TEST_CASE_P(/* empty prefix*/, UtRoverCommandInteractionFixture_P, ::testing::ValuesIn(commandInteractionTestData));
 
 /*
  * \description   This Ut tests the interaction between the move and turn
@@ -280,5 +273,6 @@ TEST_P(UtRoverCommandInteractionFixture_P, CommandInteraction) {
   }
 }
 
+} // namespace Rover
 } // namespace RoverCpp
 } // namespace test

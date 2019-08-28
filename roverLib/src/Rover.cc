@@ -1,13 +1,20 @@
 #include "roverLib/Rover.hpp"
 
-namespace RoverCpp {
+#include <iostream>
 
-Rover::Rover(int x_, int y_, Orientation orientation_) noexcept
-    : state_{x_, y_, orientation_} {
+namespace RoverCpp {
+namespace Rover {
+
+Rover::Rover() noexcept : state_{0, 0, Orientation::NORTH}, wasCalibrated_(false), id_(generateNewId()) {
   // intentionally left empty
 }
 
-Rover::StateType Rover::estimateState(Rover::CommandType command_) const {
+Rover::Rover(int x_, int y_, Orientation orientation_) noexcept
+    : state_{x_, y_, orientation_}, wasCalibrated_(false), id_(generateNewId()) {
+  // intentionally left empty
+}
+
+RoverStateType Rover::estimateState(CommandType command_) const {
   auto estimation = state_;
 
   auto turnRight = [&estimation, this](int rightTurns_) {
@@ -15,8 +22,7 @@ Rover::StateType Rover::estimateState(Rover::CommandType command_) const {
 
     // modulo with negativ numbers is well defined since C++11
     const auto offset = (rightTurns_ % nElements) + nElements;
-    estimation.orientation = static_cast<Orientation>(
-        (static_cast<int>(state_.orientation) + offset) % nElements);
+    estimation.orientation = static_cast<Orientation>((static_cast<int>(state_.orientation) + offset) % nElements);
   };
 
   auto move = [&estimation, this]() {
@@ -56,8 +62,20 @@ Rover::StateType Rover::estimateState(Rover::CommandType command_) const {
   return estimation;
 }
 
-const Rover::StateType &Rover::executeCommand(Rover::CommandType command_) {
+const RoverStateType &Rover::executeCommand(CommandType command_) {
+  if (!wasCalibrated_) {
+    // log here
+  }
   state_ = estimateState(command_);
+  return state_;
+}
+
+const RoverStateType &Rover::calibrate(const StateType &newState_) {
+  if (wasCalibrated_) {
+    // log here
+  }
+  state_ = newState_;
+  wasCalibrated_ = true;
   return state_;
 }
 
@@ -67,14 +85,44 @@ int Rover::getStateY() const { return state_.y; }
 
 Orientation Rover::getStateOrientation() const { return state_.orientation; }
 
-const Rover::StateType &Rover::getState() const { return state_; }
+const RoverStateType &Rover::getState() const { return state_; }
 
-bool operator==(const Rover::StateType &lhs, const Rover::StateType &rhs) {
-  return ((lhs.x == rhs.x) && (lhs.y == rhs.y) &&
-          (lhs.orientation == rhs.orientation));
+bool Rover::wasCalibrated() const { return wasCalibrated_; }
+const std::string &Rover::getId() const { return id_; }
+
+std::string Rover::generateNewId() {
+  static int counter = 1;
+  std::string id = "RVR_ID_" + std::to_string(counter);
+  ++counter;
+  return id;
 }
 
-bool operator!=(const Rover::StateType &lhs, const Rover::StateType &rhs) {
-  return !(lhs == rhs);
+bool operator==(const RoverStateType &lhs, const RoverStateType &rhs) {
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.orientation == rhs.orientation));
 }
+
+bool operator!=(const RoverStateType &lhs, const RoverStateType &rhs) { return !(lhs == rhs); }
+
+std::ostream &operator<<(std::ostream &os_, const RoverStateType &state_) {
+  os_ << state_.x << ' ' << state_.y << ' ';
+  switch (state_.orientation){
+  case Orientation::NORTH:
+    os_<<'N';
+    break;
+  case Orientation::EAST:
+    os_<< 'E';
+    break;
+  case Orientation::SOUTH:
+    os_<< 'S';
+    break;
+  case Orientation::WEST:
+    os_<< 'W';
+    break;
+  default:
+    os_ << "Unknown Orientation";
+    break;
+  }
+  return os_;
 }
+} // namespace Rover
+} // namespace RoverCpp

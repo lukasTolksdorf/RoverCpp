@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(roverCpp_project)
+project(roverCpp_project CXX)
 
 option(BUILD_TESTS "Enable compilation of tests" ON)
 
@@ -40,11 +40,14 @@ else()
                          )
 endif()
 
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/common/cmake/modules")
 include(addNewLibraryTarget)
 
 
 add_subdirectory(roverLib)
+add_subdirectory(controllerLib)
+
+add_subdirectory(RoverController)
 
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTS)

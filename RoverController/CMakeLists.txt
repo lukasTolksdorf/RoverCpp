@@ -1,0 +1,3 @@
+add_executable(RoverController RoverController.cc)
+
+target_link_libraries(RoverController controllerLib project_warnings)
